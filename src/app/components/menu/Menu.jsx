@@ -6,7 +6,7 @@ import { MenuCategories } from "../menuCategories/MenuCategories";
 
 export const Menu = () => {
   return (
-    <div className="flex-[2]">
+    <div className="hidden md:block flex-[2]">
       <h2 className="text-gray text-base font-normal ">What's hot</h2>
       <h1 className="text-2xl">Most Popular</h1>
       <MenuPosts withImage={false} />
