@@ -4,6 +4,7 @@ import { ThemeProvider } from "../providers/ThemeProvider";
 import { Footer } from "./components/footer/Footer";
 import { Navbar } from "./components/navbar/Navbar";
 import "./globals.css";
+import AuthProvider from "../providers/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,17 +17,19 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeContextProvider>
-          <ThemeProvider>
-            <div className="min-h-screen bg-bg text-textColor">
-              <div className="max-w-screen-2xl ml-auto mr-auto px-[80px]">
-                <Navbar />
-                {children}
-                <Footer />
+        <AuthProvider>
+          <ThemeContextProvider>
+            <ThemeProvider>
+              <div className="min-h-screen bg-bg text-textColor">
+                <div className="max-w-screen-2xl ml-auto mr-auto px-[80px]">
+                  <Navbar />
+                  {children}
+                  <Footer />
+                </div>
               </div>
-            </div>
-          </ThemeProvider>
-        </ThemeContextProvider>
+            </ThemeProvider>
+          </ThemeContextProvider>
+        </AuthProvider>
       </body>
     </html>
   );

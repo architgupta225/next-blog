@@ -1,18 +1,19 @@
 "use client";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useState } from "react";
 
 export const AuthLinks = () => {
   const [open, setOpen] = useState(false);
-  const status = false;
+  const { status } = useSession();
   return (
     <div className="flex gap-5">
-      {status ? (
+      {status === 'unauthenticated' ? (
         <Link href="/login">Login</Link>
       ) : (
         <div className="flex gap-[20px]">
           <Link href="/write">Write</Link>
-          <span className="cursor-pointer">Logout</span>
+          <span className="cursor-pointer" onClick={signOut}>Logout</span>
         </div>
       )}
       <div
