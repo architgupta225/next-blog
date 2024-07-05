@@ -6,6 +6,7 @@ import React, { useState } from "react";
 export const AuthLinks = () => {
   const [open, setOpen] = useState(false);
   const { status } = useSession();
+  
   return (
     <div className="flex gap-5">
       {status === 'unauthenticated' ? (
