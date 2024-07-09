@@ -88,7 +88,11 @@ const WritePage = () => {
   }
 
   if (status === "unauthenticated") {
-    router.push("/");
+    useEffect(() => {
+      router.push("/");
+    }, [status]);
+
+    return null;
   }
 
   return (
