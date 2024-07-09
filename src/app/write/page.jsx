@@ -4,9 +4,19 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import ReactQuill from "react-quill";
+import dynamic from "next/dynamic";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.bubble.css";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
+let getStorage, ref, uploadBytesResumable, getDownloadURL;
+if (typeof window !== "undefined") {
+  const firebaseStorage = require("firebase/storage");
+  getStorage = firebaseStorage.getStorage;
+  ref = firebaseStorage.ref;
+  uploadBytesResumable = firebaseStorage.uploadBytesResumable;
+  getDownloadURL = firebaseStorage.getDownloadURL;
+}
+
 import { app } from "../../utils/firebase";
 
 const WritePage = () => {
@@ -21,7 +31,7 @@ const WritePage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (file) {
+    if (file && typeof window !== "undefined") {
       const storage = getStorage(app);
       const upload = () => {
         const name = new Date().getTime() + file.name;
@@ -83,16 +93,14 @@ const WritePage = () => {
     }
   };
 
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/");
+    }
+  }, [status]);
+
   if (status === "loading") {
     return <div>Loading...</div>;
-  }
-
-  if (status === "unauthenticated") {
-    useEffect(() => {
-      router.push("/");
-    }, [status]);
-
-    return null;
   }
 
   return (
