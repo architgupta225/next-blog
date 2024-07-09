@@ -43,7 +43,7 @@ export const CategoryList = async () => {
 
           return (
             <Link
-              href="/blog?cat=style"
+              href={`/blog?cat=${item.title}`}
               className={`flex items-center gap-[10px] justify-center w-[100%]
         sm:w-[45%] md:w-[25%] lg:w-[20%] xl:w-[15%] h-20 rounded-[10px] capitalize ${bgColor}`}
               key={item._id}
