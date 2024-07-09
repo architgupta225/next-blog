@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import useSWR from "swr";
 
 const fetcher = async (url) => {
@@ -27,6 +27,16 @@ export const Comments = ({ postSlug }) => {
     fetcher
   );
 
+  const [desc,setDesc] = useState("")
+
+  const handleSubmit = async() => {
+    await fetch("/api/comments" ,{
+      method : "POST",
+      body:JSON.stringify({desc,postSlug})
+    })
+    mutate()
+  }
+
   return (
     <div className="mt-14">
       <div className="text-softTextColor mb-7">Comments</div>
@@ -35,8 +45,10 @@ export const Comments = ({ postSlug }) => {
           <textarea
             placeholder="write a comment"
             className="p-5 w-full"
+            onChange={e=>setDesc(e.target.value)}
           ></textarea>
-          <button className="px-5 py-4 bg-[teal] text-white font-bold border-none rounded-[5px] cursor-pointer">
+          <button  onClick={handleSubmit}
+          className="px-5 py-4 bg-[teal] text-white font-bold border-none rounded-[5px] cursor-pointer">
             Send
           </button>
         </div>
