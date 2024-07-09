@@ -1,9 +1,32 @@
+"use client";
+
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import useSWR from "swr";
 
-export const Comments = () => {
-  const status = "authenticated";
+const fetcher = async (url) => {
+  const res = await fetch(url);
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    const error = new Error(data.message);
+    throw error;
+  }
+
+  return data;
+};
+
+export const Comments = ({ postSlug }) => {
+  const {status} = useSession();
+
+  const { data, mutate, isLoading } = useSWR(
+    `http://localhost:3000/api/comments?postSlug=${postSlug}`,
+    fetcher
+  );
+
   return (
     <div className="mt-14">
       <div className="text-softTextColor mb-7">Comments</div>
@@ -21,86 +44,27 @@ export const Comments = () => {
         <Link href="/login">Login to write a comment</Link>
       )}
       <div className="mt-12">
-        <div className="mb-12">
-          <div className="flex items-center gap-5 mb-5">
-            <Image
-              src="/p1.jpeg"
-              width={50}
-              height={50}
-              className="rounded-full object-cover"
-            />
-            <div className="flex flex-col gap-1 text-softTextColor">
-              <span className="font-medium ">John Doe</span>
-              <span className="text-sm font-light">01.01.23</span>
-            </div>
-          </div>
-          <p className="desc">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Libero rem
-            debitis quibusdam ea quod laborum possimus, laboriosam iusto tempora
-            sint et saepe quia. Doloremque inventore quaerat veritatis delectus
-            corporis quas!
-          </p>
-        </div>
-        <div className="mb-12">
-          <div className="flex items-center gap-5 mb-5">
-            <Image
-              src="/p1.jpeg"
-              width={50}
-              height={50}
-              className="rounded-full object-cover"
-            />
-            <div className="flex flex-col gap-1 text-softTextColor">
-              <span className="font-medium ">John Doe</span>
-              <span className="text-sm font-light">01.01.23</span>
-            </div>
-          </div>
-          <p className="desc">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Libero rem
-            debitis quibusdam ea quod laborum possimus, laboriosam iusto tempora
-            sint et saepe quia. Doloremque inventore quaerat veritatis delectus
-            corporis quas!
-          </p>
-        </div>
-        <div className="mb-12">
-          <div className="flex items-center gap-5 mb-5">
-            <Image
-              src="/p1.jpeg"
-              width={50}
-              height={50}
-              className="rounded-full object-cover"
-            />
-            <div className="flex flex-col gap-1 text-softTextColor">
-              <span className="font-medium ">John Doe</span>
-              <span className="text-sm font-light">01.01.23</span>
-            </div>
-          </div>
-          <p className="desc">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Libero rem
-            debitis quibusdam ea quod laborum possimus, laboriosam iusto tempora
-            sint et saepe quia. Doloremque inventore quaerat veritatis delectus
-            corporis quas!
-          </p>
-        </div>
-        <div className="mb-12">
-          <div className="flex items-center gap-5 mb-5">
-            <Image
-              src="/p1.jpeg"
-              width={50}
-              height={50}
-              className="rounded-full object-cover"
-            />
-            <div className="flex flex-col gap-1 text-softTextColor">
-              <span className="font-medium ">John Doe</span>
-              <span className="text-sm font-light">01.01.23</span>
-            </div>
-          </div>
-          <p className="desc">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Libero rem
-            debitis quibusdam ea quod laborum possimus, laboriosam iusto tempora
-            sint et saepe quia. Doloremque inventore quaerat veritatis delectus
-            corporis quas!
-          </p>
-        </div>
+        {isLoading
+          ? "loading..."
+          : data?.map((item) => (
+              <div className="mb-12" key={item._id}>
+                <div className="flex items-center gap-5 mb-5">
+                  {item.user?.image && (
+                    <Image
+                      src={item.user.image}
+                      width={50}
+                      height={50}
+                      className="rounded-full object-cover"
+                    />
+                  )}
+                  <div className="flex flex-col gap-1 text-softTextColor">
+                    <span className="font-medium ">{item.user.name}</span>
+                    <span className="text-sm font-light">{item.createdAt}</span>
+                  </div>
+                </div>
+                <p className="desc">{item.desc}</p>
+              </div>
+            ))}
       </div>
     </div>
   );
