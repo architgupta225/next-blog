@@ -9,12 +9,12 @@ export default function Login() {
 
   const router = useRouter();
 
-  if(status === "loading"){
-    return <div>Loading...</div>
+  if (status === "loading") {
+    return <div>Loading...</div>;
   }
 
-  if(status === "authenticated"){
-    router.push('/')
+  if (status === "authenticated") {
+    router.push("/");
   }
 
   return (
@@ -26,18 +26,6 @@ export default function Login() {
           onClick={() => signIn("google")}
         >
           Sign in with Google
-        </div>
-        <div
-          className="p-5 rounded-md border-none text-white text-sm md:text-base 
-        font-normal md:font-bold cursor-pointer flex justify-center items-center bg-[#111]"
-        >
-          Sign in with GitHub
-        </div>
-        <div
-          className="p-5 rounded-md border-none text-white text-sm md:text-base 
-        font-normal md:font-bold cursor-pointer flex justify-center items-center bg-[#087BEA]"
-        >
-          Sign in with Facebook
         </div>
       </div>
     </div>
